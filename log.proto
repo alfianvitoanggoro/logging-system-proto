@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package log;
+
+option go_package = "logging-system-proto/log";
+
+enum Status {
+  STATUS_UNSPECIFIED = 0; // default
+  SUCCESS = 1;
+  FAILED = 2;
+}
+
+// LogRequest represents a single logging request from a client.
+message LogRequest {
+  // Unique identifier of the website or client application.
+  int32 web_id = 1;
+
+  // Username of the user performing the action.
+  string username = 2;
+
+  // Optional: Currency code in ISO 4217 format (e.g., "IDR", "USD").
+  string currency = 3;
+
+  // Unique action or log code. Should not be duplicated in database.
+  string code = 4;
+
+  // ISO 8601 formatted date string (e.g., "2025-04-25").
+  string date = 5;
+}
+
+// LogResponse is returned after log is received.
+message LogResponse {
+  // Human-readable message indicating result.
+  Status status = 1;
+  string message = 2;
+}
+
+// LogService is responsible for receiving log entries from clients.
+service LogService {
+  // WriteLog accepts a single log entry from a client.
+  rpc WriteLog(LogRequest) returns (LogResponse);
+}
